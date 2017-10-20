@@ -1,0 +1,128 @@
+	<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Vue基础</title>
+		<style type="text/css">
+			.red{
+				background-color: red;
+			}
+			.border{
+				border: 2px solid black;
+			}
+			.round{
+				border-radius: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<!--
+        	作者：kjrkjri@outlook.com
+        	时间：2017-10-20
+        	描述：
+        -->
+        <div id="app">
+        	<!--在{{}}中添加data中的变量或者表达式即可（单向绑定）-->
+        	  <div>{{message}}</div>
+        	  <!--v-on:指令用于元素事件的绑定，并且绑定的函数必须在vue对象,methods中声明。 用@也可以绑定，例如@click = "btnClick"-->
+        	  <button v-on:click="btnClick">隐藏/显示</button>
+        	  <!--使用v-bind-: 指定属性-->
+        	  <img v-bind:src="'img/' + num + '.jpg'"/ alt="Vue 属性绑定" />
+        	  
+        	  <!--v-if  v-show指令用于控制一块内容的显示与隐藏-->
+        	  <p v-if="isShow">这是可以隐藏的文本</p>
+        	  
+        	  <!--v-for 指令可以绑定数组的数据来渲染-->
+        	  <ul>
+        	  	<li v-for="(book,index) in books">
+        	  		<!--自定义过滤器：{{数据（实参1）|filter（"实参2"，"实参3"）}}-->
+        	  		<!--同时使用多个过滤器{{数据 | filterA | filterB}}-->
+        	  		第{{index+1}}本,《{{book.name}}》的作者是：{{book.author}},
+        	  		售价为:<b>{{book.price | increase | rmb(2,"￥")}}</b>元
+        	  	</li>
+        	  </ul>
+        	  
+        	  <!--v-model 用于数据的双向绑定-->
+        	  <input type="number" v-model="n1"  />
+        	   <input type="number" v-model="n2" />
+        	   <br />
+        	   <span>{{n1}}+{{n2}}={{n1+n2}}</span>
+        	   <span>{{n1}}-{{n2}}={{n1-n2}}</span>
+        	   <span>{{n1}}*{{n2}}={{n1*n2}}</span>
+        	   <span>{{n1}}/{{n2}}={{n1/n2}}</span>
+        
+           <!--Class与Style绑定-->
+           <label for="">背景</label>
+           <input type="checkbox" v-model="classObj.red" />
+           <label for="">边框</label>
+           <input type="checkbox" v-model="classObj.border" />
+           <label for="">圆角</label>
+           <input type="checkbox" v-model="classObj.round" />
+           <!--如果给class绑定一个对象 ，那么会把这个对象属性值为"真"-->
+           <div :class="classObj" class="box">
+           	Class与style绑定
+           </div>
+           <div :class="[activeClass]">
+           	Class绑定
+           </div>
+           <div :style="{backgroundColor:color,height:height}">Style绑定（对象）</div>
+        </div>
+        
+        
+	</body>
+</html>
+<script src="vue/vue.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	var app = new Vue({
+		//el:指定应用程序容器跟标签。值是一个css选择器的字符串
+		el:"#app",
+		data:{
+			//data:应用程序的数据
+			message:"HELLO WORLD",
+			num:1,
+			isShow: true,
+			books:[
+			{name:"水浒传",author:"施耐庵",price:"19.9"},
+			{name:"三国演义",author:"罗贯中",price:"39.9"},
+			{name:"西游记",author:"吴承恩",price:"9.9"},
+			{name:"红楼梦",author:"曹雪芹",price:"29.9"}
+			],
+			n1: 0,
+			n2: 1,
+			classObj:{
+				red:false,
+				round:false,
+				border:true
+			},
+			activeClass:"active",
+			color:"green",
+			height:"100px"
+			
+		},
+		//methods:声明应用程序中所有的方法（函数）。值是一个object
+		methods:{
+			btnClick:function(){
+				console.log("隐藏/显示");
+				//切换图片
+				this.num =  this.num >= 10 ? 1 : this.num + 1;	
+				
+				//切换显示/隐藏
+				this.isShow = !this.isShow
+			}
+		},
+		
+		//添加自定义过滤器
+		filters:{
+			//过滤器函数总接受表达式的值作为第一个参数
+			rmb : function(value,fixed,symbols){
+//				console.log(arguments);
+				if (fixed == undefined) fixed = 2;
+				if (symbols == undefined) symbols = "￥";
+				return symbols + parseInt(value).toFixed(fixed);
+			},
+			increase:function(value){
+				return parseInt(value) + 10;
+			}
+		}
+	})
+</script>
